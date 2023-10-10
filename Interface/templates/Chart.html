@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Titre de la page</title>
+  <link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script></head>
+<body>
+        <canvas id = "lineChart" width = "1980" height = "950"></canvas>
+<script>
+
+
+
+         var ctx = document.getElementById("lineChart").getContext("2d");
+            var lineChart = new Chart(ctx, {
+
+  type: "line",
+  data: {
+    labels : {{labels | safe}},
+
+    datasets: [{
+      label : "Et0",
+                data
+        :         {{  values | safe }} ,
+            fill : false,
+                borderColor   :"rgb(75,192,192)",
+                lineTension :0.1}     ]
+        },
+         options:{
+      responsive:true
+         }
+
+        });
+</script>
+</body>
+</html>

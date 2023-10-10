@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+
+body {
+    display: flex;
+    height: 200hv;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+    background: linear-gradient(to right, #e6a871, #598fb6);
+}
+.container{
+    max-width: 800px;
+    width: 100%;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+}
+.container .title{
+    font-size: 25px;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 20px;
+    font-family:"Copperplate",Fantasy;
+}
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  width: 50%;
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style checkbox */
+.tabcontent {
+  background-color: white;
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+
+.tabcontent form .checkbox{
+    display: flex;
+    margin-right: 20px;
+    justify-content: space-between;
+}
+.tabcontent form .checkbox .details_checkbox{
+    font-weight:500 ;
+    margin-bottom: 10px;
+}
+
+/* input style*/
+.tabcontent form .details{
+    display: flex;
+    justify-content: space-between;
+}
+.tabcontent form .details input{
+    height:20px ;
+    width:31%;
+    margin-top: 10px;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding-left: 5px;
+
+}
+
+/*submit style */
+.tabcontent form button{
+    width: 100%;
+    height: 40px;
+    margin-top: 20px;
+    outline: none;
+    color: #fff;
+    border:none;
+    border-radius: 5px;
+    background:linear-gradient(to right,#e6a871, #598fb6) ;
+}
+    </style>
+
+  </head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script></head>
+
+  <body>
+    <div class="container">
+      <div class="title">Machine learning : Prediction ET0 </div>
+      <div class="tab">
+        <button class="tablinks" onclick="openCity(event, 'daily')" id="defaultOpen">Journalier</button>
+        <button class="tablinks" onclick="openCity(event, 'hourly')">Horaire</button>
+        <button class="tablinks" onclick="openCity(event, 'Exdaily')">Excel journalier</button>
+        <button class="tablinks" onclick="openCity(event, 'Exhourly')">Excel Horaire</button>
+
+
+      </div>
+      <div id="daily" class="tabcontent">
+          <p>choisi les paramétres que vous voulez:</p>
+          <form action="{{ url_for('predict')}}" method="post">
+            <div class="checkbox">
+              <div class="details_checkbox">
+                <input type="checkbox" id="temp" value="1" name="check" />
+                <label for="temp">Température</label>
+              </div>
+              <div class="details_checkbox">
+                <input type="checkbox" id="ray" value="2" name="check" />
+                <label for="ray">Rayonnement solaire</label>
+              </div>
+              <div class="details_checkbox">
+                <input type="checkbox" id="hum" value="3" name="check" />
+                <label for="hum">Humidité</label>
+              </div>
+              <div class="details_checkbox">
+                <input type="checkbox" id="vit" value="4" name="check" />
+              <label for="vit">Vitesse du vent</label>
+              </div>
+            </div>
+            <div id="tempbox" class="details">
+              <hr>
+              <label for="temp">Température:</label><br>
+              <input type="text" name="tempmoy" placeholder ="Température moyenne" class="input_box" >
+              <input type="text"  name="tempmax"placeholder ="Température maximal" class="input_box" >
+              <input type="text" name="tempmin" placeholder ="Température minimal" class="input_box" >
+            </div>
+
+            <div id="raybox" class="details">
+              <hr>
+              <label for="ray">Rayonnement solaire</label><br>
+              <input type="text"  name="ray"placeholder ="la valeur moyenne" >
+            </div>
+            <div id="humbox" class="details">
+              <hr>
+              <label for="hum">Humidité:</label><br>
+              <input type="text"  name="hummoy" placeholder ="Humidité moyenne" class="input_box" >
+              <input type="text"  name="hummax"placeholder ="Humidité maximal" class="input_box" >
+              <input type="text"  name="hummin" placeholder ="Humidité minimal" class="input_box">
+            </div>
+
+            <div id="vitbox" class="details">
+              <hr>
+              <label for="vit">Vitesse du vent:</label><br>
+              <input type="text"  name="vitmoy" placeholder ="Vitesse moyenne" class="input_box" >
+            <input type="text" name="vitmax"placeholder ="Vitesse maximal" class="input_box" >
+            </div>
+            <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+            <br>
+            <br>
+            <div>{{ prediction_text }}</div>
+          </form>
+      </div>
+      <div id="hourly" class="tabcontent">
+          <p>choisi les paramétres que vous voulez:</p>
+          <form action="{{ url_for('predict2')}}" method="post">
+              <div class="checkbox">
+              <div class="details_checkbox">
+                <input type="checkbox" id="temp2" value="1" name="check" />
+                <label for="temp">Température</label>
+              </div>
+              <div class="details_checkbox">
+                <input type="checkbox" id="ray2" value="2" name="check" />
+                <label for="ray">Rayonnement solaire</label>
+              </div>
+              <div class="details_checkbox">
+                <input type="checkbox" id="hum2" value="3" name="check" />
+                <label for="hum">Humidité</label>
+              </div>
+              <div class="details_checkbox">
+                <input type="checkbox" id="vit2" value="4" name="check" />
+              <label for="vit">Vitesse du vent</label>
+              </div>
+            </div>
+            <div id="tempbox2" class="details">
+              <hr>
+              <label for="temp">Température:</label><br>
+              <input type="text" name="tempmoy" placeholder ="Température moyenne" class="input_box" >
+              <input type="text"  name="tempmax"placeholder ="Température maximal" class="input_box" >
+              <input type="text" name="tempmin" placeholder ="Température minimal" class="input_box" >
+            </div>
+
+            <div id="raybox2" class="details">
+              <hr>
+              <label for="ray">Rayonnement solaire</label><br>
+              <input type="text"  name="ray"placeholder ="la valeur moyenne" >
+            </div>
+            <div id="humbox2" class="details">
+              <hr>
+              <label for="hum">Humidité:</label><br>
+              <input type="text"  name="hummoy" placeholder ="Humidité moyenne" class="input_box" >
+              <input type="text"  name="hummax"placeholder ="Humidité maximal" class="input_box" >
+              <input type="text"  name="hummin" placeholder ="Humidité minimal" class="input_box">
+            </div>
+
+            <div id="vitbox2" class="details">
+              <hr>
+              <label for="vit">Vitesse du vent:</label><br>
+              <input type="text"  name="vitmoy" placeholder ="Vitesse moyenne" class="input_box" >
+            <input type="text" name="vitmax"placeholder ="Vitesse maximal" class="input_box" >
+            </div>
+
+
+
+
+
+              <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+
+
+              <div> {{ prediction_text2 }} </div>
+        </form>
+      </div>
+       <div id="Exdaily" class="tabcontent">
+         <p>choisi les paramétres que vous voulez:</p>
+           <form action="{{ url_for('predict3')}}" method="POST" enctype="multipart/form-data">
+              <div class="checkbox">
+              <div class="details_checkbox">
+                <input type="checkbox" id="temp3" value="1" name="check" />
+                <label for="temp">Température</label>
+              </div>
+              <div class="details_checkbox">
+                <input type="checkbox" id="ray3" value="2" name="check" />
+                <label for="ray">Rayonnement solaire</label>
+              </div>
+              <div class="details_checkbox">
+                <input type="checkbox" id="hum3" value="3" name="check" />
+                <label for="hum">Humidité</label>
+              </div>
+              <div class="details_checkbox">
+                <input type="checkbox" id="vit3" value="4" name="check" />
+              <label for="vit">Vitesse du vent</label>
+              </div>
+
+              </div>
+                             <p>S'il vous plait respecter l'entete suivante:</p>
+               <div>
+               <h1 style="font-size:20px">Date/heure | Température moy | Température max | Température min | Rayonnement solaire moy | Humidité moy | Humidité max | Humidité min | Vitesse du vent moy | Vitesse du vent max</h1>
+</div>
+<title>Prediction ET0</title>
+    <p><input type=file  name=file_upload>
+        <button type="submit" class="btn btn-primary btn-block btn-large"  >Predict</button>
+           <canvas  width = "1980" height = "1080" style="display:block;"  id = "lineChart" ></canvas>
+
+
+        </form>
+
+
+               </div>
+        <div id="Exhourly" class="tabcontent">
+         <p>choisi les paramétres que vous voulez:</p>
+           <form action="{{ url_for('predict4')}}" method="POST" enctype="multipart/form-data">
+              <div class="checkbox">
+              <div class="details_checkbox">
+                <input type="checkbox" id="temp4" value="1" name="check" />
+                <label for="temp">Température</label>
+              </div>
+              <div class="details_checkbox">
+                <input type="checkbox" id="ray4" value="2" name="check" />
+                <label for="ray">Rayonnement solaire</label>
+              </div>
+              <div class="details_checkbox">
+                <input type="checkbox" id="hum4" value="3" name="check" />
+                <label for="hum">Humidité</label>
+              </div>
+              <div class="details_checkbox">
+                <input type="checkbox" id="vit4" value="4" name="check" />
+              <label for="vit">Vitesse du vent</label>
+              </div>
+
+              </div>
+                             <p>S'il vous plait respecter l'entete suivante:</p>
+               <div>
+               <h1 style="font-size:20px">Date/heure | Température moy | Température max | Température min | Rayonnement solaire moy | Humidité moy | Humidité max | Humidité min | Vitesse du vent moy | Vitesse du vent max</h1>
+</div>
+<title>Prediction ET0</title>
+    <p><input type=file  name=file_upload>
+        <button type="submit" class="btn btn-primary btn-block btn-large"  >Predict</button>
+           <canvas  width = "1980" height = "1080"   id = "lineChart2" ></canvas>
+
+
+        </form>
+
+
+               </div>
+
+
+
+    </div>
+  </head>
+
+    <!--Script chart daily-->
+<script>
+
+         var ctx = document.getElementById("lineChart").getContext("2d");
+            var lineChart = new Chart(ctx, {
+
+  type: "line",
+  data: {
+    labels : {{labels | safe}},
+
+    datasets: [{
+      label : "Et0",
+                data
+        :         {{  values | safe }} ,
+            fill : false,
+                borderColor   :"#e6a871",
+                lineTension :0.1}     ]
+        },
+         options:{
+      responsive:true
+         }
+
+        });
+</script>
+    <!--Script chart daily-->
+        <!--Script chart hourly-->
+<script>
+
+         var ctx = document.getElementById("lineChart2").getContext("2d");
+            var lineChart = new Chart(ctx, {
+
+  type: "line",
+  data: {
+    labels : {{labels2 | safe}},
+
+    datasets: [{
+      label : "Et0",
+                data
+        :         {{  values2 | safe }} ,
+            fill : false,
+                borderColor   :"#e6a871",
+                lineTension :0.1}     ]
+        },
+         options:{
+      responsive:true
+         }
+
+        });
+
+</script>
+    <!--Script chart hourly-->
+    <!--Script Interface -->
+
+    <script>
+function showDiv() {
+   document.getElementById('lineChart').style.display = "none";
+}
+function showDiv2() {
+   document.getElementById('lineChart2').style.display = "none";
+}
+
+function openCity(evt, data) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+
+
+  }
+  document.getElementById(data).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+
+
+
+const tempcheckbox2 = document.getElementById('temp2');
+const tempbox2 = document.getElementById('tempbox2');
+
+const raycheckbox2 = document.getElementById('ray2');
+const raybox2 = document.getElementById('raybox2');
+
+const humcheckbox2 = document.getElementById('hum2');
+const humbox2 = document.getElementById('humbox2');
+
+const vitcheckbox2 = document.getElementById('vit2');
+const vitbox2 = document.getElementById('vitbox2');
+
+tempbox2.style.display = 'none';
+raybox2.style.display = 'none';
+humbox2.style.display = 'none';
+vitbox2.style.display = 'none';
+
+tempcheckbox2.addEventListener('click', function handleClick() {
+  if (tempcheckbox2.checked) {
+    tempbox2.style.display = 'block';
+  } else {
+    tempbox2.style.display = 'none';
+  }
+});
+
+raycheckbox2.addEventListener('click', function handleClick() {
+  if (raycheckbox2.checked) {
+    raybox2.style.display = 'block';
+  } else {
+    raybox2.style.display = 'none';
+  }
+});
+
+humcheckbox2.addEventListener('click', function handleClick() {
+  if (humcheckbox2.checked) {
+    humbox2.style.display = 'block';
+  } else {
+    humbox2.style.display = 'none';
+  }
+});
+
+vitcheckbox2.addEventListener('click', function handleClick() {
+  if (vitcheckbox2.checked) {
+    vitbox2.style.display = 'block';
+  } else {
+    vitbox2.style.display = 'none';
+  }
+});
+
+
+
+const tempcheckbox = document.getElementById('temp');
+const tempbox = document.getElementById('tempbox');
+
+const raycheckbox = document.getElementById('ray');
+const raybox = document.getElementById('raybox');
+
+const humcheckbox = document.getElementById('hum');
+const humbox = document.getElementById('humbox');
+
+const vitcheckbox = document.getElementById('vit');
+const vitbox = document.getElementById('vitbox');
+
+tempbox.style.display = 'none';
+raybox.style.display = 'none';
+humbox.style.display = 'none';
+vitbox.style.display = 'none';
+
+tempcheckbox.addEventListener('click', function handleClick() {
+  if (tempcheckbox.checked) {
+    tempbox.style.display = 'block';
+  } else {
+    tempbox.style.display = 'none';
+  }
+});
+
+raycheckbox.addEventListener('click', function handleClick() {
+  if (raycheckbox.checked) {
+    raybox.style.display = 'block';
+  } else {
+    raybox.style.display = 'none';
+  }
+});
+
+humcheckbox.addEventListener('click', function handleClick() {
+  if (humcheckbox.checked) {
+    humbox.style.display = 'block';
+  } else {
+    humbox.style.display = 'none';
+  }
+});
+
+vitcheckbox.addEventListener('click', function handleClick() {
+  if (vitcheckbox.checked) {
+    vitbox.style.display = 'block';
+  } else {
+    vitbox.style.display = 'none';
+  }
+});
+
+document.getElementById("defaultOpen").click();
+
+
+    </script>
+    <!--Script Interface -->
+
+  </body> 
+</html>
